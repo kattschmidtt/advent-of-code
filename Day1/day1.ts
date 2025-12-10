@@ -1,17 +1,12 @@
+import * as fs from 'fs';
+
+const filePath: string = 'input.txt';
+const content: string = fs.readFileSync(filePath, 'utf-8');
+const entry: string[] = content.split(/r?\n/)
+
 function day1(): number { 
 
-  const combination: string[] = [
-    "L68",
-    "L30",
-    "R48",
-    "L5",
-    "R60",
-    "L55",
-    "L1",
-    "L99",
-    "R14",
-    "L82",
-  ];
+  const combination = entry;
 
   let password: number = 0;  //the final password
   let startingPosition: number = 50;
