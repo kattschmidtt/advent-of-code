@@ -4,18 +4,25 @@ const filePath: string = 'input.txt';
 const content: string = fs.readFileSync(filePath, 'utf-8');
 const entry: string[] = content.split(',');
 
-
+//part 2: we must check all variable amounts of substring lengths
 function isRepeated(n: number): boolean {
   const item = String(n);
+  const itemLen = item.length;
 
-  //must be even length 
-  if (item.length % 2 !== 0) return false;
+  //loop through each chunk of repeated numbers
+  // we start at 1 since there must be at least one set of numbers
+  // example: 123123123 
+  for (let i = 1; i <= Math.floor(itemLen / 2); i++) {
+    if (itemLen % i !== 0) continue; //this means there might be more even chunks
+    
+    const copies = item.slice(0, i);// 123
+    const repeatCount = itemLen / i; // 3 repeating sets of 123
 
-  const firstHalf = item.slice(0, item.length / 2);
-  const secondHalf = item.slice(item.length / 2);
+    //if the first set of copies matches the item return true
+    if(copies.repeat(repeatCount) === item) return true;
+  }
 
-  //return if first half is same length
-  return firstHalf === secondHalf;
+  return false;
 }
 
 function day2(): number { 
