@@ -2,14 +2,13 @@ import * as fs from 'fs';
 
 const filePath: string = 'input.txt';
 const content: string = fs.readFileSync(filePath, 'utf-8');
-const tempDB: string[] = content.split('\n');
+const tempDB: string[] = content.split(/r?\n/).map(line => line.trim()); //removing every whitespace from every line because windows is a bitch
 
-function day5(): number {
+function day5(): Number {
   let answer = 0; //fresh available ingredient IDs
 
   // idRanges = fresh ingredient ID ranges
   // availableId = available ingredient IDs
-
   const splitIndex = tempDB.indexOf("");
   const idRanges = tempDB.slice(0, splitIndex);
   const availableId = tempDB.slice(splitIndex + 1);
@@ -22,6 +21,8 @@ function day5(): number {
 
       const [lower, upper] = range.split("-").map(Number); //make it a number dummy 
       
+      
+
       //if the available id is inclusively inbetween the range (lower and upper) we increment counter
       if (Number(availableId[i]) >= lower && Number(availableId[i]) <= upper) {
         includedInRangeCounter++;
@@ -29,9 +30,34 @@ function day5(): number {
       }
     }
     
-    console.log(includedInRangeCounter);
-    answer += includedInRangeCounter;
+    //console.log('part 1: ', includedInRangeCounter);
+    //answer += includedInRangeCounter;
   }
+ 
+
+  // PART 2
+  const ranges = idRanges.map(entry => entry.split('-').map(Number));
+
+  //soritng by the lower end of the current range and lower end of the next element in ascending order
+  ranges.sort((current, next) => current[0] - next[0]); 
+
+  let lower = ranges[0][0];
+  let upper = ranges[0][1];
+
+  for (let i =1; i < ranges.length; i++) {
+    const [start, end] = ranges[i]; //mapping respective start and end points
+
+    if (start <= upper + 1) {
+      upper = Math.max(upper, end);
+    } else {
+      //move the pointers over one
+      answer += upper - lower + 1;
+      lower = start;
+      upper = end;
+    }
+  }
+
+  answer += upper - lower + 1;
 
   return answer;
 }
